@@ -10,35 +10,49 @@ const rateValue = document.querySelector('#rate-value');
 const pitch = document.querySelector('#pitch');
 const pitchValue = document.querySelector('#pitch-value');
 
+//Browser check
+// Firefox 1.0+
+var isFirefox = typeof InstallTrigger !== 'undefined';
+
+// Chrome 1+
+var isChrome = !!window.chrome && !!window.chrome.webstore;
+
 // Init voices array
 let voices = [];
 const getVoices = () => {
     voices = synth.getVoices();
 
     //Insert voices into voice-select
+    console.log(voiceSelect.children.length)
     voices.forEach(voice => {
         // create option element
         const option = document.createElement('option');
-        option.textContent = voice.name + '('+voice.lang+')';
+        option.textContent = voice.name + '(' + voice.lang + ')';
         option.setAttribute('data-lang', voice.lang);
         option.setAttribute('data-name', voice.name);
         voiceSelect.appendChild(option);
-    })
-}
-getVoices();
-if(synth.onvoiceschanged !== undefined){
-    synth.onvoiceschanged = getVoices;
+    });
 }
 
+if (isFirefox) {
+    getVoices();
+}
+if (isChrome) {
+    if (synth.onvoiceschanged !== undefined) {
+        synth.onvoiceschanged = getVoices;
+    }
+}
+
+
 // Speak
-const speak = () => {    
-    if(synth.speaking){
+const speak = () => {
+    if (synth.speaking) {
         console.error('Already speaking');
         return;
     }
-    if(textInput.value != ''){
+    if (textInput.value != '') {
         const speakText = new SpeechSynthesisUtterance(textInput.value);
-        
+
         speakText.onend = e => {
             console.log('Done speaking');
         }
@@ -50,7 +64,7 @@ const speak = () => {
         const selectedVoice = voiceSelect.selectedOptions[0].getAttribute('data-name');
 
         voices.forEach(voice => {
-            if(voice.name == selectedVoice){
+            if (voice.name == selectedVoice) {
                 speakText.voice = voice;
             }
         });
