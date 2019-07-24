@@ -22,6 +22,7 @@ let voices = [];
 const getVoices = () => {
     voices = synth.getVoices();
 
+    console.log(voices)
     //Insert voices into voice-select
     console.log(voiceSelect.children.length)
     voices.forEach(voice => {
@@ -34,15 +35,7 @@ const getVoices = () => {
     });
 }
 
-if (isFirefox) {
-    getVoices();
-}
-if (isChrome) {
-    if (synth.onvoiceschanged !== undefined) {
-        synth.onvoiceschanged = getVoices;
-    }
-}
-
+getVoices();
 
 // Speak
 const speak = () => {
